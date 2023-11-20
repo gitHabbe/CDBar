@@ -1,0 +1,122 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+
+    <!-- AURAFRAME TEMPLATE -->
+    <Frame name="CDBar_CooldownFrame_Template" inherits="CDBar_AuraFrameTemplate" virtual="true">
+        <Size>
+            <AbsDimension x="198" y="1" />
+        </Size>
+    </Frame>
+
+    <!-- ICON-FRAME TEMPLATE -->
+    <Frame name="CDBar_AuraFrameTemplate" virtual="true">
+    </Frame>
+
+    <!-- ICON TEMPLATE -->
+    <Frame name="CDBarCooldownFrame_Template" enableMouse="true" virtual="true">
+        <Size>
+            <AbsDimension x="20" y="20" />
+        </Size>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture name="$parentIcon" setAllPoints="true"/>
+            </Layer>
+            <Layer level="OVERLAY">
+                <Texture name="$parentBorder" file="Interface\Buttons\UI-Debuff-Overlays">
+                    <Size>
+                        <AbsDimension x="23" y="23"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOPLEFT">
+                            <Offset x="-2" y="2"/>
+                        </Anchor>
+                        <Anchor point="BOTTOMRIGHT">
+                            <Offset x="2" y="-2"/>
+                        </Anchor>
+                    </Anchors>
+                    <TexCoords left="0.296875" right="0.5703125" top="0" bottom="0.515625"/>
+                </Texture>
+            </Layer>
+            <Layer level="OVERLAY">
+                <FontString name="$parentCount" inherits="NumberFontNormalSmall" justifyH="RIGHT">
+                    <Anchors>
+                        <Anchor point="TOPRIGHT">
+                            <Offset>
+                                <AbsDimension x="2" y="-1"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+            </Layer>
+            <Layer level="OVERLAY">
+                <Texture name="$parentStealable" file="Interface\TargetingFrame\UI-TargetingFrame-Stealable" alphaMode="ADD" hidden="true">
+                    <Size>
+                        <AbsDimension x="23" y="23"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="CENTER" />
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Cooldown name="$parentCooldown" setAllPoints="true" reverse="true" virtual="true" >
+                <SwipeTexture>
+                    <Color r="0" g="0" b="0" a="0.8"/>
+                </SwipeTexture>
+                <EdgeTexture file="Interface\Cooldown\edge"/>
+                <BlingTexture file="Interface\Cooldown\star4">
+                    <Color r="0.3" g="0.6" b="1" a="0.8"/>
+                </BlingTexture>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <FontString name="$parentText" inherits="My_CooldownText"/>
+                    </Layer>
+                </Layers>
+            </Cooldown>
+        </Frames>
+        <Scripts>
+            <OnUpdate>
+            </OnUpdate>
+            <OnEnter>
+                if not CDBar.db.class.showTooltip then
+                    return
+                end
+                GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 15, 15);
+                if self.type == "spell" then
+                    if CDBar.isClassic then
+                        GameTooltip:SetSpellByID(self.spellId);
+                    elseif CDBar.isTBC then
+                        GameTooltip:SetSpell(self.spellBookIndex, BOOKTYPE_SPELL);
+                    end
+                elseif self.type == "pet" then
+                    if CDBar.isClassic then
+                        GameTooltip:SetSpellByID(self.spellId);
+                    elseif CDBar.isTBC then
+                        GameTooltip:SetSpell(self.spellBookIndex, BOOKTYPE_PET);
+                    end
+                elseif self.type == "item" then
+                    if CDBar.isClassic then
+                        GameTooltip:SetItemByID(self.spellId)
+                    elseif CDBar.isTBC then
+                        GameTooltip:SetInventoryItem("player", self.slotId)
+                    end
+                end
+            </OnEnter>
+            <OnLeave>
+                GameTooltip:Hide();
+            </OnLeave>
+        </Scripts>
+    </Frame>
+
+    <!-- COOLDOWN TEXT TEMPLATE -->
+    <Font name="My_CooldownText" font="Fonts\FRIZQT__.TTF" outline="NORMAL" justifyV="MIDDLE" justifyH="CENTER" virtual="true">
+
+        <FontHeight>
+            <AbsValue val="24"/>
+        </FontHeight>
+
+        <Color r="1.0" g="1.0" b="1.0"/>
+    </Font>
+
+    <Script File="CDBar.lua" />
+</Ui>

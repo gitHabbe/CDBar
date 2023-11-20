@@ -1,0 +1,12 @@
+<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+    <Include file ="Debug.lua" />
+    <Include file ="CDBar.xml" />
+    <Include file ="Database.lua" />
+    <Include file ="Frames.lua" />
+
+    <Include file ="Config.lua" />
+    <Include file ="Tools.lua" />
+
+    <Include file ="Spell_Data_TBC.lua" />
+    <Include file ="Spell_Data_WOTLK.lua" />
+</Ui>
