@@ -1,13 +1,10 @@
 .idea
 .vscode
-changelog.config.js
 
-/LibsClassic
-/LibsTBC
-/LibsWotlk
-#LoadClassicLibs.bat
-#LoadTBCLibs.bat
-#LoadWotlkLibs.bat
+AddonDescription.md
 
 /Backup
-/CDBar/Libs
+CDBar/Libs/*
+LibsWotlk
+LibsTBC
+LibsClassic
