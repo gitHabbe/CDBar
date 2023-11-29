@@ -23,10 +23,14 @@ function CDBar:DatabaseInitialize()
 end
 
 function CDBar:_CreateDB()
-    if self.isClassic then
+    if self.isClassic or self.isClassic60 then
         self.dbi = LibStub("AceDB-3.0"):New("CDBar_DB", self.defaults, true)
     elseif self.isTBC or self.isWotlk then
         self.dbi = LibStub("AceDB-3.0"):New("CDBar_DB", self.defaults, "default")
+    end
+
+    if self.isTBC or self.isWotlk or self.isClassic60 then
+
         self.GCDReference = {
             validSpells = {
                 ["Power Word: Fortitude"] = true,
@@ -53,6 +57,7 @@ function CDBar:_CreateDB()
             petSpellBookIndex = 0,
         }
     end
+
 end
 
 function CDBar:IsCooldownInDB(tableDB, targetSpellName)

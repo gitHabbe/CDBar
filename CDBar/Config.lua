@@ -405,7 +405,7 @@ end
 
 
 function CDBar:SlashCommand(msg)
-    if self.isClassic or self.isWotlk then
+    if self.isClassic or self.isWotlk or self.isClassic60 then
         InterfaceOptionsFrame_OpenToCategory(self.options)
     elseif self.isTBC then
         InterfaceOptionsFrame_OpenToFrame("CDBar")

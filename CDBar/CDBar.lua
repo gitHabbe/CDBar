@@ -4,7 +4,9 @@ CDBar = LibStub("AceAddon-3.0"):NewAddon("CDBar", "AceEvent-3.0", "AceConsole-3.
 
 CDBar.buildInfo = select(2, GetBuildInfo())
 CDBar.build = tonumber(CDBar.buildInfo)
-CDBar.isClassic = CDBar.build > 40000
+CDBar.tocVersion = select(4, GetBuildInfo())
+CDBar.isClassic = CDBar.build > 40000 and CDBar.tocVersion > 20000 and CDBar.tocVersion < 40000
+CDBar.isClassic60 = CDBar.build > 40000 and CDBar.tocVersion < 20000
 CDBar.isTBC = CDBar.build > 5000 and CDBar.build < 10000
 CDBar.isWotlk = CDBar.build > 9000 and CDBar.build < 13000
 
@@ -51,7 +53,7 @@ function CDBar:BuildCooldownList()
     DebugCDBar:Print("Building CD list")
     self.cooldownList = {}
 
-    if self.isTBC or self.isWotlk then self.spellCache = {} end
+    if self.isTBC or self.isWotlk or self.isClassic60 then self.spellCache = {} end
 
     self:_LoopPlayerSpellBook()
     self:_LoopPetSpellBook()
@@ -94,6 +96,16 @@ function CDBar:_GetSpellBookItemName(spellIndex, bookType)
         end
 
         return spellName, subSpellName
+    elseif self.isClassic60 then
+        local spellName, subSpellName = GetSpellBookItemName(spellIndex, bookType)
+        if self.GCDReference.validSpells[spellName] then
+            self.GCDReference.spellBookIndex = spellIndex
+        end
+        if self.GCDReference.petValidPetSpells[spellName] then
+            self.GCDReference.petSpellBookIndex = spellIndex
+        end
+
+        return spellName, subSpellName
     end
 end
 
@@ -128,10 +140,10 @@ function CDBar:_AddSpellCooldown(spellName, spellBookIndex)
 end
 
 function CDBar:_GetSpellBaseCooldown(spellId, spellName)
-    if self.isClassic then
+    if self.isClassic or self.isClassic60 then
         if spellId == nil then return 0 end
         return GetSpellBaseCooldown(spellId)
-    elseif self.isTBC or self.isWotlk then
+    elseif self.isTBC then
         local spellData
         if spellName and self.spellCache[string.lower(spellName)] ~= nil then return 0 end
         --if self.spellCache[string.lower(spellName)] == true then return 0 end
@@ -170,9 +182,10 @@ function CDBar:_GetSpellBaseCooldown(spellId, spellName)
 end
 
 function CDBar:_GetSpellCooldown(spellId, spellBookIndex, type)
+    --DebugCDBar:Print("spellId: " .. spellId)
     if spellId == nil then return end
     if type == "item" then return GetItemCooldown(spellId) end
-    if self.isClassic  then
+    if self.isClassic or self.isClassic60 then
         return GetSpellCooldown(spellId)
     elseif self.isTBC or self.isWotlk then
         if type == "pet" then
@@ -258,6 +271,7 @@ end
 
 function CDBar:UpdateCooldownFrames()
     self:_UpdateCooldownData()
+    --DebugCDBar:Print("Upading CDs")
 
     if self.db.class.durationSort then
         self:_SortByCooldown()
@@ -298,11 +312,12 @@ function CDBar:_UpdateCooldownData()
     local GCD
     if self.isClassic then
         _, GCD = GetSpellCooldown(61304)
-    elseif self.isTBC or self.isWotlk then
+    elseif self.isTBC or self.isWotlk or self.isClassic60 then
         _, GCD = GetSpellCooldown(self.GCDReference.spellBookIndex, BOOKTYPE_SPELL)
     end
     for _, cooldown in pairs(self.cooldownList) do
         local start, duration, enabled = self:_GetSpellCooldown(cooldown.spellId, cooldown.spellBookIndex, cooldown.type)
+
         if duration == nil or start == nil or GCD == nil or enabled == nil then return end
         local isOnCooldown = duration > 0 and start > 0 and enabled == 1 and duration ~= GCD
         if self.isClassic then
@@ -365,7 +380,7 @@ function CDBar:_SortByIndex()
 end
 
 function CDBar:_CreateCooldownTimer(cooldown)
-    if self.isClassic then
+    if self.isClassic or self.isClassic60 then
         if cooldown.timer == nil then
             cooldown.timer = C_Timer.NewTimer(cooldown.remainingCooldown + 0.1, function()
                 cooldown.timer:Cancel()

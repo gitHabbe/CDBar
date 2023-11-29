@@ -83,19 +83,19 @@
                 end
                 GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 15, 15);
                 if self.type == "spell" then
-                    if CDBar.isClassic then
+                    if CDBar.isClassic or CDBar.isClassic60 then
                         GameTooltip:SetSpellByID(self.spellId);
                     elseif CDBar.isTBC then
                         GameTooltip:SetSpell(self.spellBookIndex, BOOKTYPE_SPELL);
                     end
                 elseif self.type == "pet" then
-                    if CDBar.isClassic then
+                    if CDBar.isClassic or CDBar.isClassic60 then
                         GameTooltip:SetSpellByID(self.spellId);
                     elseif CDBar.isTBC then
                         GameTooltip:SetSpell(self.spellBookIndex, BOOKTYPE_PET);
                     end
                 elseif self.type == "item" then
-                    if CDBar.isClassic then
+                    if CDBar.isClassic or CDBar.isClassic60 then
                         GameTooltip:SetItemByID(self.spellId)
                     elseif CDBar.isTBC then
                         GameTooltip:SetInventoryItem("player", self.slotId)

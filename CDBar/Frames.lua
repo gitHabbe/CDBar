@@ -83,7 +83,7 @@ function CDBar:CenterLastRowFrames(lastRowId, rowWidth)
 end
 
 function CDBar:SetFrameCooldown(cooldownFrame, start, duration)
-    if self.isClassic then
+    if self.isClassic or self.isClassic60 then
         CooldownFrame_Set(cooldownFrame, start, duration, 1);
     elseif self.isTBC or self.isWotlk then
         if start > 0 and duration > 0 then
@@ -156,7 +156,7 @@ function onFrameClick(self, buttonName)
     if not (buttonName == "LeftButton" and IsAltKeyDown()) then return end
     CDBar:UpdateCooldownFrames()
     local targetChannel
-    if CDBar.isClassic then
+    if CDBar.isClassic or CDBar.isClassic60 then
         if UnitInBattleground("player") then
             targetChannel = "INSTANCE_CHAT"
         elseif UnitInRaid("player") then
