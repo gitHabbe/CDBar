@@ -311,10 +311,11 @@ function CDBar:_UpdateCooldownData()
                     isOnCooldown = false
                 end
             end
-        elseif self.isTBC then
+        elseif self.isTBC or self.isClassic60 then
             if cooldown.type == "pet" then
-                _, GCD = GetSpellCooldown(self.GCDReference.petSpellBookIndex, BOOKTYPE_PET)
-                isOnCooldown = duration > 0 and start > 0 and enabled == 1 and duration ~= GCD
+                if duration == 1.5 then
+                    isOnCooldown = false
+                end
             end
         end
         if isOnCooldown then
