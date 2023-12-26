@@ -1,4 +1,4 @@
-##CDBar
+#CDBar
 
 This is an addon developed for the World of Warcraft Classic, 2.4.3, and 3.3.5 client.  
 Change the content of `/Libs` directory to match your target client.
@@ -16,6 +16,6 @@ This allows you to theoretically hide most of your actionbars assuming they are 
 
 Type `/cdbar` or `/cdb` to open settings
 
-![Example](https://media.forgecdn.net/attachments/765/508/ezgif.gif "Example")
+![Example](https://media.forgecdn.net/attachments/765/508/ezgif.gif)
 
 Special thank you to [DnB_Junkee](https://github.com/XiconQoo "XiconQoo")
