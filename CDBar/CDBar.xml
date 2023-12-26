@@ -47,6 +47,17 @@
                     </Anchors>
                 </FontString>
             </Layer>
+            <Layer level="OVERLAY"> <!-- Hotkey -->
+                <FontString name="$parentHotkey" inherits="NumberFontNormalSmall" justifyH="RIGHT">
+                    <Anchors>
+                        <Anchor point="TOPRIGHT">
+                            <Offset>
+                                <AbsDimension x="2" y="-1"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+            </Layer>
             <Layer level="OVERLAY">
                 <Texture name="$parentStealable" file="Interface\TargetingFrame\UI-TargetingFrame-Stealable" alphaMode="ADD" hidden="true">
                     <Size>

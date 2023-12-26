@@ -46,6 +46,7 @@ function CDBar:_CreateButtonFrame(frameID)
     frame.cooldown  = _G[frameName .. "Cooldown"];
     frame.stealable = _G[frameName .. "Stealable"];
     frame.border    = _G[frameName .. "Border"];
+    frame.hotkey    = _G[frameName .. "Hotkey"];
 
     frame:SetID(frameID)
     self.cooldownFrame["Cooldown" .. frameID] = frame;

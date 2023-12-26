@@ -1,4 +1,7 @@
 local GetItemCooldown = GetItemCooldown or (C_Container and C_Container.GetItemCooldown) or nil
+local tempSpells = {}
+local tempIcons = {}
+local defaultSpellPadding = 30
 
 CDBar = LibStub("AceAddon-3.0"):NewAddon("CDBar", "AceEvent-3.0", "AceConsole-3.0")
 
@@ -109,6 +112,84 @@ function CDBar:_GetSpellBookItemName(spellIndex, bookType)
     end
 end
 
+function CDBar:_LoopActionBar()
+    for i = 1, 12 do
+        buildMacroHotkeyList(i)
+    end
+    for i = 60, 71 do
+        buildMacroHotkeyList(i)
+    end
+    for i = 1, 12 do
+        buildAbilityHotkeyList(i)
+    end
+    for i = 60, 71 do
+        buildAbilityHotkeyList(i)
+    end
+end
+
+function buildMacroHotkeyList(actionBarIndex)
+    local command, category, bind = GetBinding(actionBarIndex + defaultSpellPadding)
+    if bind == nil then return end
+    local actionType, id, subType = GetActionInfo(actionBarIndex)
+    if actionType == "macro" then
+        local name, icon, body = GetMacroInfo(id) --name, rank = GetMacroSpell(slot)
+        if not icon then return end
+        tempIcons[icon] = {
+            ["name"] = name,
+            ["bind"] = bind,
+        }
+    end
+end
+
+function buildAbilityHotkeyList(actionBarIndex, type)
+    local command, category, bind = GetBinding(actionBarIndex + defaultSpellPadding)
+    DebugCDBar:Print(command .. "    " .. category)
+    if bind == nil then return end
+    local actionType, abilityId, subType = GetActionInfo(actionBarIndex)
+    local name, _, icon, _, _, _, spellId = GetSpellInfo(abilityId)
+    local macroExists = tempIcons[icon]
+    if macroExists then return end
+    if actionType == "spell" then
+        --DebugCDBar:Print(name)
+        tempSpells[abilityId] = {
+            ["name"] = name,
+            ["bind"] = bind,
+        }
+        --DebugCDBar:Print("Ability " .. macroExists.spellName .. " on bind " .. bind)
+    end
+end
+
+function addFrameHotkey(frame, cooldown)
+    local isMacro = tempIcons[cooldown.iconTexture]
+    local isSpell = tempSpells[cooldown.spellId]
+    frame.hotkey:SetText()
+
+    if isMacro then
+        local newHotkey = styleModifierText(isMacro.bind)
+        frame.hotkey:SetText(newHotkey)
+    elseif isSpell then
+        local newHotkey = styleModifierText(isSpell.bind)
+        --local oldFont, oldSize, oldMono = frame.hotkey:GetFont()
+        --DebugCDBar:Print(oldFont .. oldSize .. oldMono)
+        --frame.hotkey:SetFont("Arial Narrow", oldSize, oldMono)
+        frame.hotkey:SetText(newHotkey)
+    end
+end
+
+function styleModifierText(bind)
+    local modifiers = {
+        ["SHIFT%-"] = "s",
+        ["CTRL%-"] = "c",
+        ["ALT%-"] = "a",
+        ["META%-"] = "m"
+    }
+    local newHotkey = bind
+    for modifier, modifierShort in pairs(modifiers) do
+        newHotkey = newHotkey:gsub(modifier, modifierShort)
+    end
+    return newHotkey
+end
+
 function CDBar:_AddSpellCooldown(spellName, spellBookIndex)
     local name, _, icon, _, _, _, spellId = GetSpellInfo(spellName)
     local cooldownMS = self:_GetSpellBaseCooldown(spellId, name)
@@ -134,6 +215,16 @@ function CDBar:_AddSpellCooldown(spellName, spellBookIndex)
         newCooldown.enabled = enabled
         newCooldown.type = "spell"
         newCooldown.spellBookIndex = spellBookIndex
+        --tempSpells[spellId] = {
+        --    ["spellId"] = spellId,
+        --    ["spellName"] = name,
+        --    ["iconTexture"] = icon,
+        --}
+        --tempIcons[icon] = {
+        --    ["spellId"] = spellId,
+        --    ["spellName"] = name,
+        --    ["iconTexture"] = icon,
+        --}
         DebugCDBar:Print("Added SPELL: " .. spellName .. " id: " .. spellId .. " baseCD: " .. cooldownMS / 1000 .. " idx: " .. spellBookIndex)
         table.insert(self.cooldownList, newCooldown)
     end
@@ -291,6 +382,7 @@ function CDBar:UpdateCooldownFrames()
     for i, cooldown in pairs(targetCooldownTable) do
         self:HideFrame(i)
         local frame = self:_CreateCooldownFrame(spellNum, cooldown)
+        --addFrameHotkey(frame, cooldown)
         CDBar:tableMerge(frame, cooldown)
         if cooldown.isOnCooldown then
             frame.hidden = false
@@ -344,6 +436,7 @@ function CDBar:_UpdateCooldownData()
             cooldown.remainingCooldown = 100000
         end
     end
+    --self:_LoopActionBar()
 end
 
 function CDBar:_SortByCooldown()
