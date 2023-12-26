@@ -16,6 +16,6 @@ This allows you to theoretically hide most of your actionbars assuming they are 
 
 Type `/cdbar` or `/cdb` to open settings
 
-![Example](https://media.forgecdn.net/attachments/765/508/ezgif.gif)
-
+[comment]: <> (![Example]&#40;https://media.forgecdn.net/attachments/765/508/ezgif.gif&#41;)
+![Example](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)
 Special thank you to [DnB_Junkee](https://github.com/XiconQoo "XiconQoo")
