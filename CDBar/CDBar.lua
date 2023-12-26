@@ -305,7 +305,7 @@ function CDBar:UpdateCooldownFrames()
     end
     self:HideLeftoverFrames(spellNum)
 
-    local cooldownFrameHeight = self:_UpdateAuraPositions(cooldownCount)
+    local cooldownFrameHeight = self:UpdateAuraPositions(cooldownCount)
 end
 
 function CDBar:_UpdateCooldownData()
@@ -406,71 +406,5 @@ function CDBar:_CreateCooldownTimer(cooldown)
             end
         end
     end
-end
-
-function CDBar:_UpdateAuraPositions(auraCount)
-    local size;
-    local rowWidth = 0
-    local newRowYOffset = 0
-    local currentRowCount = 0
-    local totalFrameHeight = 0
-    local rowLargestIconSize = 0
-    local lastRowID = 1
-    self.firstRowWidth = 0
-
-    for frameID = 1, auraCount do
-        -- Set the size for the current icon, depending on a list of large buffs and debuffs.
-        size = self.db.class["size"]
-        if newRowYOffset == 0 then
-            self.firstRowWidth = rowWidth
-        end
-
-        -- Set the row size that will be returned by this function according to the current icon's size.
-        if (frameID == 1) then
-            rowWidth = size
-            rowLargestIconSize = size
-        else
-            --rowWidth = rowWidth + size + Settings.AURA_X_PADDING
-            rowWidth = rowWidth + size + self.db.class["xPadding"]
-        end
-
-        -- Create a new row, if the current row width would be larger than the aura frame width. The totalFrameHeight is now set to the frame height + the largest Icon of the preceding row to get the yOffset we need.
-        --if (rowWidth > maxRowWidth) then
-        --local isNewRow = rowWidth > maxRowWidth
-        local isNewRow = currentRowCount + 1 > self.db.class.rowCount
-        if (isNewRow) then
-            --rowCount = rowCount + 1
-            currentRowCount = 1
-            newRowYOffset = newRowYOffset + self.db.class["yPadding"] + rowLargestIconSize;
-            rowWidth = size;
-            rowLargestIconSize = 0;
-
-            self:PlaceCooldownFrame(frameID, frameID, size, newRowYOffset)
-            lastRowID = frameID
-            -- if the last icon creates a new row, we add his size to the newRowYOffset to get the overall height of the auraFrame.
-            if (frameID == auraCount) then
-                totalFrameHeight = newRowYOffset + size;
-            end
-        else
-            currentRowCount = currentRowCount + 1
-            self:PlaceCooldownFrame(frameID, frameID - 1, size, newRowYOffset);
-            -- The last Icon creates no new row, so we add the largestIconSize to newRowYOffset to get the total height.
-            if (frameID == auraCount) then
-                totalFrameHeight = newRowYOffset + rowLargestIconSize;
-            end
-        end
-
-        -- Check if the icon is larger than the current largest icon.
-        if (rowLargestIconSize < size) then
-            rowLargestIconSize = size;
-        end
-    end
-    self:CenterLastRowFrames(lastRowID, rowWidth)
-    if self.db.class.hideReadyCooldowns then
-        self:UpdateMainFramePosition()
-    end
-
-    return totalFrameHeight;
-
 end
 
