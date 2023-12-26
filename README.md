@@ -17,6 +17,7 @@ This allows you to theoretically hide most of your actionbars assuming they are 
 Type `/cdbar` or `/cdb` to open settings
 
 ![Imgur](https://s13.gifyu.com/images/Sjqit.gif)
+<img src="https://s13.gifyu.com/images/Sjqit.gif" width="200px">
 <video src='https://i.imgur.com/ilPr6Xe.mp4' width=180/>
 <video src="https://i.imgur.com/ilPr6Xe.mp4" controls="controls" style="max-width: 730px;"> </video>
 ![Example](https://media.forgecdn.net/attachments/765/508/ezgif.gif)
