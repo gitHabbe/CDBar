@@ -2,17 +2,17 @@ local function charOption(params)
     local options = {
         get = function(info)
             local key = info.arg or info[#info]
-            return CDBar.db.char[key]
+            return NicerCooldowns.db.char[key]
         end,
         set = function(info, value)
             local key = info.arg or info[#info]
-            DebugCDBar:Print("Setting db char key: " .. key .. " to: " .. tostring(value), "Char Option")
-            CDBar.dbi.char[key] = value
+            DebugNicerCooldowns:Print("Setting db char key: " .. key .. " to: " .. tostring(value), "Char Option")
+            NicerCooldowns.dbi.char[key] = value
             if params.rebuild then
-                CDBar:BuildCooldownList()
+                NicerCooldowns:BuildCooldownList()
             end
-            CDBar:UpdateMainFramePosition()
-            CDBar:UpdateCooldownFrames()
+            NicerCooldowns:UpdateMainFramePosition()
+            NicerCooldowns:UpdateCooldownFrames()
         end,
     }
 
@@ -31,30 +31,30 @@ local function classOption(params)
     local options = {
         get = function(info)
             local key = info.arg or info[#info]
-            return CDBar.db.class[key]
+            return NicerCooldowns.db.class[key]
         end,
         set = function(info, value)
             local key = info.arg or info[#info]
             if key == "esoFilipMode" then
-                CDBar.db.class.durationSort = false
-                CDBar.db.class.hideReadyCooldowns = false
+                NicerCooldowns.db.class.durationSort = false
+                NicerCooldowns.db.class.hideReadyCooldowns = false
             end
-            CDBar.dbi.class[key] = value
-            DebugCDBar:Print("Setting db class key: " .. key .. " to: " .. tostring(value), "Class Option")
-            CDBar:UpdateMainFramePosition()
-            CDBar:UpdateCooldownFrames()
+            NicerCooldowns.dbi.class[key] = value
+            DebugNicerCooldowns:Print("Setting db class key: " .. key .. " to: " .. tostring(value), "Class Option")
+            NicerCooldowns:UpdateMainFramePosition()
+            NicerCooldowns:UpdateCooldownFrames()
         end,
     }
 
     for k, v in pairs(params) do
-        --DebugCDBar:Print("param key: " .. k .. " param value " .. v)
+        --DebugNicerCooldowns:Print("param key: " .. k .. " param value " .. v)
         options[k] = v
     end
 
     return options
 end
 
-CDBar.ClassDefaults = {
+NicerCooldowns.ClassDefaults = {
     --rowWidth = 200,
     rowCount = 10,
     size = 32,
@@ -75,7 +75,7 @@ CDBar.ClassDefaults = {
     debugMode = false,
 }
 
-CDBar.CharDefaults = {
+NicerCooldowns.CharDefaults = {
     includeTrinket1 = false,
     includeTrinket2 = false,
     includeGloves = false,
@@ -84,7 +84,7 @@ CDBar.CharDefaults = {
     itemList = {},
 }
 
-local CDBarAceConfig = {
+local NicerCooldownsAceConfig = {
     type = "group",
     width = "half",
     args = {
@@ -123,7 +123,7 @@ local CDBarAceConfig = {
                     order = 1,
                     min = -800,
                     max = 800,
-                    disabled = function() return CDBar.db.class.isCenterX end
+                    disabled = function() return NicerCooldowns.db.class.isCenterX end
                 }),
                 isCenterX = classOption({
                     type = "toggle",
@@ -169,12 +169,12 @@ local CDBarAceConfig = {
                     name = "Spell order",
                     order = 1,
                     values = function()
-                        table.sort(CDBar.db.class.cooldownList, function(a, b)
-                            local number = tonumber(CDBar:stringSplit(a)[1])
-                            local number2 = tonumber(CDBar:stringSplit(b)[1])
+                        table.sort(NicerCooldowns.db.class.cooldownList, function(a, b)
+                            local number = tonumber(NicerCooldowns:stringSplit(a)[1])
+                            local number2 = tonumber(NicerCooldowns:stringSplit(b)[1])
                             return number < number2
                         end)
-                        return CDBar.db.class.cooldownList
+                        return NicerCooldowns.db.class.cooldownList
                     end,
                 }),
                 spellNameOrder = classOption({
@@ -190,21 +190,21 @@ local CDBarAceConfig = {
                     name = "Apply number",
                     order = 3,
                     func = function(info)
-                        --for i, cooldown in pairs(CDBar.db.cooldownList) do
-                        local spellListKey = CDBar.db.class.spellList
-                        local oldValue = CDBar.db.class.cooldownList[spellListKey]
-                        local spellAsTable = CDBar:stringSplit(oldValue)
-                        local newNumber = CDBar.db.class.spellNameOrder
-                        local spellName = table.concat(CDBar:tableSlice(spellAsTable, 2, #spellAsTable), " ")
+                        --for i, cooldown in pairs(NicerCooldowns.db.cooldownList) do
+                        local spellListKey = NicerCooldowns.db.class.spellList
+                        local oldValue = NicerCooldowns.db.class.cooldownList[spellListKey]
+                        local spellAsTable = NicerCooldowns:stringSplit(oldValue)
+                        local newNumber = NicerCooldowns.db.class.spellNameOrder
+                        local spellName = table.concat(NicerCooldowns:tableSlice(spellAsTable, 2, #spellAsTable), " ")
                         local newValue = newNumber .. " " .. spellName
-                        for key, value in pairs(CDBar.db.class.cooldownList) do
+                        for key, value in pairs(NicerCooldowns.db.class.cooldownList) do
                             if value == oldValue then
-                                CDBar.db.class.cooldownList[key] = newValue
+                                NicerCooldowns.db.class.cooldownList[key] = newValue
                             end
                         end
-                        DebugCDBar:Print("old:", oldValue, "new:", newValue)
-                        CDBar:BuildCooldownList()
-                        CDBar:UpdateCooldownFrames()
+                        DebugNicerCooldowns:Print("old:", oldValue, "new:", newValue)
+                        NicerCooldowns:BuildCooldownList()
+                        NicerCooldowns:UpdateCooldownFrames()
                     end
                 },
                 someHeader = {
@@ -216,12 +216,12 @@ local CDBarAceConfig = {
                     type = "toggle",
                     name = "Sort cooldown CDs first",
                     order = 5,
-                    disabled = function() return CDBar.db.class.esoFilipMode end,
+                    disabled = function() return NicerCooldowns.db.class.esoFilipMode end,
                 }),
                 hideReadyCooldowns = classOption({
                     type = "toggle",
                     name = "Hide ready cooldowns",
-                    disabled = function() return CDBar.db.class.esoFilipMode end,
+                    disabled = function() return NicerCooldowns.db.class.esoFilipMode end,
                     order = 6
                 }),
                 esoFilipMode = classOption({
@@ -246,9 +246,9 @@ local CDBarAceConfig = {
                     confirm = true,
                     confirmText = "Are you sure you want to reset spell order list?",
                     func = function(info)
-                        CDBar.db.class.cooldownList = {}
-                        CDBar:BuildCooldownList()
-                        CDBar:UpdateCooldownFrames()
+                        NicerCooldowns.db.class.cooldownList = {}
+                        NicerCooldowns:BuildCooldownList()
+                        NicerCooldowns:UpdateCooldownFrames()
                     end
                 }
             },
@@ -268,11 +268,11 @@ local CDBarAceConfig = {
                     name = "Add",
                     order = 7,
                     func = function(info)
-                        if CDBar.db.class.ignoreSpell == "" or CDBar.db.class.ignoreSpell == nil then return end
-                        table.insert(CDBar.db.class.ignoreSpellList, CDBar:removeBrackets(CDBar.db.class.ignoreSpell))
-                        CDBar.db.class.ignoreSpell = ""
-                        CDBar:BuildCooldownList()
-                        CDBar:UpdateCooldownFrames()
+                        if NicerCooldowns.db.class.ignoreSpell == "" or NicerCooldowns.db.class.ignoreSpell == nil then return end
+                        table.insert(NicerCooldowns.db.class.ignoreSpellList, NicerCooldowns:removeBrackets(NicerCooldowns.db.class.ignoreSpell))
+                        NicerCooldowns.db.class.ignoreSpell = ""
+                        NicerCooldowns:BuildCooldownList()
+                        NicerCooldowns:UpdateCooldownFrames()
                     end
                 },
                 ignoreSpells = classOption({
@@ -280,7 +280,7 @@ local CDBarAceConfig = {
                     name = "Spell list",
                     order = 8,
                     values = function()
-                        return CDBar.db.class.ignoreSpellList
+                        return NicerCooldowns.db.class.ignoreSpellList
                     end
                 }),
                 confirmRemoveIgnoreSpell = {
@@ -288,11 +288,11 @@ local CDBarAceConfig = {
                     name = "Remove",
                     order = 9,
                     func = function(info)
-                        CDBar.db.class.ignoreSpellList = CDBar:tableFilter(CDBar.db.class.ignoreSpellList, function(_, idx)
-                            return idx ~= CDBar.db.class.ignoreSpells
+                        NicerCooldowns.db.class.ignoreSpellList = NicerCooldowns:tableFilter(NicerCooldowns.db.class.ignoreSpellList, function(_, idx)
+                            return idx ~= NicerCooldowns.db.class.ignoreSpells
                         end)
-                        CDBar:BuildCooldownList()
-                        CDBar:UpdateCooldownFrames()
+                        NicerCooldowns:BuildCooldownList()
+                        NicerCooldowns:UpdateCooldownFrames()
                     end
                 },
             }
@@ -342,13 +342,13 @@ local CDBarAceConfig = {
                     name = "Add",
                     order = 7,
                     func = function(info)
-                        if CDBar.db.char.ignoreItem == "" or CDBar.db.char.ignoreItem == nil then return end
-                        local newItem = CDBar:stringTrim(CDBar.db.char.ignoreItem)
-                        newItem = CDBar:removeBrackets(newItem)
-                        table.insert(CDBar.db.char.ignoreItems, newItem)
-                        CDBar.db.char.ignoreItem = ""
-                        CDBar:BuildCooldownList()
-                        CDBar:UpdateCooldownFrames()
+                        if NicerCooldowns.db.char.ignoreItem == "" or NicerCooldowns.db.char.ignoreItem == nil then return end
+                        local newItem = NicerCooldowns:stringTrim(NicerCooldowns.db.char.ignoreItem)
+                        newItem = NicerCooldowns:removeBrackets(newItem)
+                        table.insert(NicerCooldowns.db.char.ignoreItems, newItem)
+                        NicerCooldowns.db.char.ignoreItem = ""
+                        NicerCooldowns:BuildCooldownList()
+                        NicerCooldowns:UpdateCooldownFrames()
                     end
                 },
                 itemList = charOption({
@@ -356,7 +356,7 @@ local CDBarAceConfig = {
                     name = "Item list",
                     order = 8,
                     values = function()
-                        return CDBar.db.char.ignoreItems
+                        return NicerCooldowns.db.char.ignoreItems
                     end
                 }),
                 confirmRemoveIgnoreItem = {
@@ -364,11 +364,11 @@ local CDBarAceConfig = {
                     name = "Remove",
                     order = 9,
                     func = function(info)
-                        CDBar.db.char.ignoreItems = CDBar:tableFilter(CDBar.db.char.ignoreItems, function(_, idx)
-                            return idx ~= CDBar.db.char.itemList
+                        NicerCooldowns.db.char.ignoreItems = NicerCooldowns:tableFilter(NicerCooldowns.db.char.ignoreItems, function(_, idx)
+                            return idx ~= NicerCooldowns.db.char.itemList
                         end)
-                        CDBar:BuildCooldownList()
-                        CDBar:UpdateCooldownFrames()
+                        NicerCooldowns:BuildCooldownList()
+                        NicerCooldowns:UpdateCooldownFrames()
                     end
                 },
             },
@@ -388,31 +388,31 @@ local CDBarAceConfig = {
     }
 }
 
-function CDBar:LoadConfig()
-    --CDBar:BuildCooldownList()
-    LibStub("AceConfig-3.0"):RegisterOptionsTable("CDBar", CDBarAceConfig)
-    self.options = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("CDBar", "CDBar")
+function NicerCooldowns:LoadConfig()
+    --NicerCooldowns:BuildCooldownList()
+    LibStub("AceConfig-3.0"):RegisterOptionsTable("NicerCooldowns", NicerCooldownsAceConfig)
+    self.options = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("NicerCooldowns", "NicerCooldowns")
 
     if (self.isClassic or self.isWotlk) and self.db.class.debugMode then
         InterfaceOptionsFrame_OpenToCategory(self.options)
     end
 end
 
-function CDBar:CreateSlashCommands()
-    self:RegisterChatCommand("cdbar", "SlashCommand")
+function NicerCooldowns:CreateSlashCommands()
+    self:RegisterChatCommand("NicerCooldowns", "SlashCommand")
     self:RegisterChatCommand("cdb", "SlashCommand")
 end
 
 
-function CDBar:SlashCommand(msg)
+function NicerCooldowns:SlashCommand(msg)
     if self.isClassic or self.isWotlk or self.isClassic60 then
         InterfaceOptionsFrame_OpenToCategory(self.options)
     elseif self.isTBC then
-        InterfaceOptionsFrame_OpenToFrame("CDBar")
+        InterfaceOptionsFrame_OpenToFrame("NicerCooldowns")
     end
 end
 
-function CDBar:Throttle()
+function NicerCooldowns:Throttle()
     --if not aura_env.last or aura_env.last < GetTime() - aura_env.config["throttle"] then
     --    aura_env.last = GetTime()
     --end

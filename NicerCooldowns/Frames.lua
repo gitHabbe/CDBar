@@ -1,11 +1,11 @@
-function CDBar:CreateMainFrame()
-    self.cooldownFrame = CreateFrame("Frame", "CDBar", UIParent, "CDBar_CooldownFrame_Template")
+function NicerCooldowns:CreateMainFrame()
+    self.cooldownFrame = CreateFrame("Frame", "NicerCooldowns", UIParent, "NicerCooldowns_CooldownFrame_Template")
     self.cooldownFrame:ClearAllPoints()
     self.cooldownFrame:SetSize(1,1)
     self.cooldownFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 end
 
-function CDBar:UpdateMainFramePosition()
+function NicerCooldowns:UpdateMainFramePosition()
     local positionX
     if self.db.class["isCenterX"] then
         positionX = ((self.firstRowWidth + 0.5) / 2) * -1
@@ -16,7 +16,7 @@ function CDBar:UpdateMainFramePosition()
     self.cooldownFrame:SetPoint("CENTER", UIParent, "CENTER", positionX, self.db.class["positionY"])
 end
 
-function CDBar:_CreateCooldownFrame(frameID, cooldown)
+function NicerCooldowns:_CreateCooldownFrame(frameID, cooldown)
     local frame = self.cooldownFrame["Cooldown" .. frameID]
     if not frame then
         frame = self:_CreateButtonFrame(frameID)
@@ -37,9 +37,9 @@ function CDBar:_CreateCooldownFrame(frameID, cooldown)
     return frame
 end
 
-function CDBar:_CreateButtonFrame(frameID)
+function NicerCooldowns:_CreateButtonFrame(frameID)
     local frameName = self.cooldownFrame:GetName() .. "Cooldown" .. frameID
-    local frame = CreateFrame("Button", frameName, self.cooldownFrame, "CDBarCooldownFrame_Template")
+    local frame = CreateFrame("Button", frameName, self.cooldownFrame, "NicerCooldownsCooldownFrame_Template")
 
     frame.icon      = _G[frameName .. "Icon"];
     frame.count     = _G[frameName .. "Count"];
@@ -54,7 +54,7 @@ function CDBar:_CreateButtonFrame(frameID)
     return frame
 end
 
-function CDBar:UpdateAuraPositions(auraCount)
+function NicerCooldowns:UpdateAuraPositions(auraCount)
     local size;
     local rowWidth = 0
     local newRowYOffset = 0
@@ -119,7 +119,7 @@ function CDBar:UpdateAuraPositions(auraCount)
     return totalFrameHeight;
 end
 
-function CDBar:HideFrame(frameID)
+function NicerCooldowns:HideFrame(frameID)
     local frameName = "Cooldown" .. frameID
     local frame = self.cooldownFrame[frameName]
     if frame then
@@ -131,7 +131,7 @@ function CDBar:HideFrame(frameID)
     return false
 end
 
-function CDBar:CenterLastRowFrames(lastRowId, rowWidth)
+function NicerCooldowns:CenterLastRowFrames(lastRowId, rowWidth)
     local lastIconRepositioned = false
     local frameID = lastRowId
     local frameTable = {}
@@ -148,7 +148,7 @@ function CDBar:CenterLastRowFrames(lastRowId, rowWidth)
     tempFrame:SetPoint(oldPoint, oldParent, oldRelative, positionX, oldPositionY)
 end
 
-function CDBar:SetFrameCooldown(cooldownFrame, start, duration)
+function NicerCooldowns:SetFrameCooldown(cooldownFrame, start, duration)
     if self.isClassic or self.isClassic60 then
         CooldownFrame_Set(cooldownFrame, start, duration, 1);
     elseif self.isTBC or self.isWotlk then
@@ -160,7 +160,7 @@ function CDBar:SetFrameCooldown(cooldownFrame, start, duration)
     end
 end
 
-function CDBar:HideLeftoverFrames(startIndex)
+function NicerCooldowns:HideLeftoverFrames(startIndex)
     while startIndex < 100 do
         local isHidden = self:HideFrame(startIndex)
         if not isHidden then
@@ -170,7 +170,7 @@ function CDBar:HideLeftoverFrames(startIndex)
     end
 end
 
-function CDBar:PlaceCooldownFrame(frameID, relativeIndex, size, yOffset)
+function NicerCooldowns:PlaceCooldownFrame(frameID, relativeIndex, size, yOffset)
     local frame;
     frame = self.cooldownFrame["Cooldown" .. frameID]
     if not frame then return end
@@ -220,9 +220,9 @@ end
 
 function onFrameClick(self, buttonName)
     if not (buttonName == "LeftButton" and IsAltKeyDown()) then return end
-    CDBar:UpdateCooldownFrames()
+    NicerCooldowns:UpdateCooldownFrames()
     local targetChannel
-    if CDBar.isClassic or CDBar.isClassic60 then
+    if NicerCooldowns.isClassic or NicerCooldowns.isClassic60 then
         if UnitInBattleground("player") then
             targetChannel = "INSTANCE_CHAT"
         elseif UnitInRaid("player") then
@@ -239,7 +239,7 @@ function onFrameClick(self, buttonName)
                 targetChannel = "SAY"
             end
         end
-    elseif CDBar.isTBC then
+    elseif NicerCooldowns.isTBC then
         if UnitInBattleground("player") then
             targetChannel = "CHAT_MSG_BATTLEGROUND"
         elseif UnitInRaid("player") then
@@ -249,9 +249,9 @@ function onFrameClick(self, buttonName)
         end
     end
 
-    local chatMessage = "[CDBar] "
+    local chatMessage = "[NicerCooldowns] "
     if self.type ~= "spell" then
-        chatMessage = CDBar:stringTitlize(self.slot) .. " "
+        chatMessage = NicerCooldowns:stringTitlize(self.slot) .. " "
     end
     if self.remainingCooldown > 50000 then
         chatMessage = chatMessage .. self.spellName .. " ready"

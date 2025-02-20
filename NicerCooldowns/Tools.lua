@@ -1,10 +1,10 @@
-function CDBar:tableMerge(table1, table2)
+function NicerCooldowns:tableMerge(table1, table2)
     for key, value in pairs(table2) do
         table1[key] = value
     end
 end
 
-function CDBar:tableSlice(tbl, first, last, step)
+function NicerCooldowns:tableSlice(tbl, first, last, step)
     local sliced = {}
 
     for i = first or 1, last or #tbl, step or 1 do
@@ -14,7 +14,7 @@ function CDBar:tableSlice(tbl, first, last, step)
     return sliced
 end
 
-function CDBar:tableFilter(targetTable, filterIter)
+function NicerCooldowns:tableFilter(targetTable, filterIter)
     local newTable = {}
 
     for index, item in pairs(targetTable) do
@@ -24,7 +24,7 @@ function CDBar:tableFilter(targetTable, filterIter)
     return newTable
 end
 
-function CDBar:stringTitlize(str)
+function NicerCooldowns:stringTitlize(str)
     local words = {}
     for word in str:gmatch("%S+") do
         table.insert(words, word)
@@ -43,7 +43,7 @@ function CDBar:stringTitlize(str)
     return titledStr
 end
 
-function CDBar:removeBrackets(str)
+function NicerCooldowns:removeBrackets(str)
     local openBracket = string.sub(str, 1, 1)
     local closeBracket = string.sub(str, -1)
 
@@ -53,7 +53,7 @@ function CDBar:removeBrackets(str)
     return str
 end
 
-function CDBar:stringSplit(input, separator)
+function NicerCooldowns:stringSplit(input, separator)
         if separator == nil then
             separator = "%s"
         end
@@ -64,11 +64,11 @@ function CDBar:stringSplit(input, separator)
         return stringTable
 end
 
-function CDBar:stringTrim(str)
+function NicerCooldowns:stringTrim(str)
     return str:match( "^%s*(.-)%s*$" )
 end
 
-function CDBar:tableJoin(targetTable, start)
+function NicerCooldowns:tableJoin(targetTable, start)
     local concatenated_strings = ""
     for i = start, #targetTable do
         concatenated_strings = concatenated_strings .. targetTable[i]
@@ -76,7 +76,7 @@ function CDBar:tableJoin(targetTable, start)
     return concatenated_strings
 end
 
-function CDBar:numberRound(num, decimalCount)
+function NicerCooldowns:numberRound(num, decimalCount)
     local factor = 10 ^ decimalCount
     return math.floor(num * factor + 0.5) / factor
 end

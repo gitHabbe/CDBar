@@ -1,6 +1,6 @@
 <Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
     <Include file ="Debug.lua" />
-    <Include file ="CDBar.xml" />
+    <Include file ="NicerCooldowns.xml" />
     <Include file ="Database.lua" />
     <Include file ="Frames.lua" />
 

@@ -3,21 +3,21 @@ local tempSpells = {}
 local tempIcons = {}
 local defaultSpellPadding = 30
 
-CDBar = LibStub("AceAddon-3.0"):NewAddon("CDBar", "AceEvent-3.0", "AceConsole-3.0")
+NicerCooldowns = LibStub("AceAddon-3.0"):NewAddon("NicerCooldowns", "AceEvent-3.0", "AceConsole-3.0")
 
-CDBar.buildInfo = select(2, GetBuildInfo())
-CDBar.build = tonumber(CDBar.buildInfo)
-CDBar.tocVersion = select(4, GetBuildInfo())
-CDBar.isClassic = CDBar.build > 40000 and CDBar.tocVersion > 20000 and CDBar.tocVersion < 40000
-CDBar.isClassic60 = CDBar.build > 40000 and CDBar.tocVersion < 20000
-CDBar.isTBC = CDBar.build > 5000 and CDBar.build < 10000
-CDBar.isWotlk = CDBar.build > 9000 and CDBar.build < 13000
+NicerCooldowns.buildInfo = select(2, GetBuildInfo())
+NicerCooldowns.build = tonumber(NicerCooldowns.buildInfo)
+NicerCooldowns.tocVersion = select(4, GetBuildInfo())
+NicerCooldowns.isClassic = NicerCooldowns.build > 40000 and NicerCooldowns.tocVersion > 20000 and NicerCooldowns.tocVersion < 40000
+NicerCooldowns.isClassic60 = NicerCooldowns.build > 40000 and NicerCooldowns.tocVersion < 20000
+NicerCooldowns.isTBC = NicerCooldowns.build > 5000 and NicerCooldowns.build < 10000
+NicerCooldowns.isWotlk = NicerCooldowns.build > 9000 and NicerCooldowns.build < 13000
 
-if CDBar.isTBC or CDBar.isWotlk then
-    LibStub("AceTimer-3.0"):Embed(CDBar)
+if NicerCooldowns.isTBC or NicerCooldowns.isWotlk then
+    LibStub("AceTimer-3.0"):Embed(NicerCooldowns)
 end
 
-function CDBar:OnEnable()
+function NicerCooldowns:OnEnable()
     self:DatabaseInitialize()
     self:LoadConfig()
     self:CreateSlashCommands()
@@ -31,29 +31,29 @@ function CDBar:OnEnable()
     self:UpdateMainFramePosition()
 end
 
-function CDBar:SPELL_UPDATE_COOLDOWN()
+function NicerCooldowns:SPELL_UPDATE_COOLDOWN()
     self:UpdateCooldownFrames()
 end
 
-function CDBar:PLAYER_EQUIPMENT_CHANGED()
-    DebugCDBar:Print("CHANGED EQUIPMENT")
+function NicerCooldowns:PLAYER_EQUIPMENT_CHANGED()
+    DebugNicerCooldowns:Print("CHANGED EQUIPMENT")
     self:BuildCooldownList()
     self:UpdateCooldownFrames()
 end
 
-function CDBar:PET_BAR_UPDATE()
+function NicerCooldowns:PET_BAR_UPDATE()
     self:BuildCooldownList()
     self:UpdateCooldownFrames()
 end
 
-function CDBar:SPELLS_CHANGED()
-    DebugCDBar:Print("CHANGED SPECIALIZATION")
+function NicerCooldowns:SPELLS_CHANGED()
+    DebugNicerCooldowns:Print("CHANGED SPECIALIZATION")
     self:BuildCooldownList()
     self:UpdateCooldownFrames()
 end
 
-function CDBar:BuildCooldownList()
-    DebugCDBar:Print("Building CD list")
+function NicerCooldowns:BuildCooldownList()
+    DebugNicerCooldowns:Print("Building CD list")
     self.cooldownList = {}
 
     if self.isTBC or self.isWotlk or self.isClassic60 then self.spellCache = {} end
@@ -76,7 +76,7 @@ function CDBar:BuildCooldownList()
     end
 end
 
-function CDBar:_LoopPlayerSpellBook()
+function NicerCooldowns:_LoopPlayerSpellBook()
     local spellBookIndex = 1
     while true do
         local spellName, _ = self:_GetSpellBookItemName(spellBookIndex, BOOKTYPE_SPELL)
@@ -86,7 +86,7 @@ function CDBar:_LoopPlayerSpellBook()
     end
 end
 
-function CDBar:_GetSpellBookItemName(spellIndex, bookType)
+function NicerCooldowns:_GetSpellBookItemName(spellIndex, bookType)
     if self.isClassic then
         return GetSpellBookItemName(spellIndex, bookType)
     elseif self.isTBC or self.isWotlk then
@@ -112,7 +112,7 @@ function CDBar:_GetSpellBookItemName(spellIndex, bookType)
     end
 end
 
-function CDBar:_LoopActionBar()
+function NicerCooldowns:_LoopActionBar()
     for i = 1, 12 do
         buildMacroHotkeyList(i)
     end
@@ -143,19 +143,19 @@ end
 
 function buildAbilityHotkeyList(actionBarIndex, type)
     local command, category, bind = GetBinding(actionBarIndex + defaultSpellPadding)
-    DebugCDBar:Print(command .. "    " .. category)
+    DebugNicerCooldowns:Print(command .. "    " .. category)
     if bind == nil then return end
     local actionType, abilityId, subType = GetActionInfo(actionBarIndex)
     local name, _, icon, _, _, _, spellId = GetSpellInfo(abilityId)
     local macroExists = tempIcons[icon]
     if macroExists then return end
     if actionType == "spell" then
-        --DebugCDBar:Print(name)
+        --DebugNicerCooldowns:Print(name)
         tempSpells[abilityId] = {
             ["name"] = name,
             ["bind"] = bind,
         }
-        --DebugCDBar:Print("Ability " .. macroExists.spellName .. " on bind " .. bind)
+        --DebugNicerCooldowns:Print("Ability " .. macroExists.spellName .. " on bind " .. bind)
     end
 end
 
@@ -170,7 +170,7 @@ function addFrameHotkey(frame, cooldown)
     elseif isSpell then
         local newHotkey = styleModifierText(isSpell.bind)
         --local oldFont, oldSize, oldMono = frame.hotkey:GetFont()
-        --DebugCDBar:Print(oldFont .. oldSize .. oldMono)
+        --DebugNicerCooldowns:Print(oldFont .. oldSize .. oldMono)
         --frame.hotkey:SetFont("Arial Narrow", oldSize, oldMono)
         frame.hotkey:SetText(newHotkey)
     end
@@ -190,7 +190,7 @@ function styleModifierText(bind)
     return newHotkey
 end
 
-function CDBar:_AddSpellCooldown(spellName, spellBookIndex)
+function NicerCooldowns:_AddSpellCooldown(spellName, spellBookIndex)
     local name, _, icon, _, _, _, spellId = GetSpellInfo(spellName)
     local cooldownMS = self:_GetSpellBaseCooldown(spellId, name)
     local start, duration, enabled = self:_GetSpellCooldown(spellId, spellBookIndex, "")
@@ -225,12 +225,12 @@ function CDBar:_AddSpellCooldown(spellName, spellBookIndex)
         --    ["spellName"] = name,
         --    ["iconTexture"] = icon,
         --}
-        DebugCDBar:Print("Added SPELL: " .. spellName .. " id: " .. spellId .. " baseCD: " .. cooldownMS / 1000 .. " idx: " .. spellBookIndex)
+        DebugNicerCooldowns:Print("Added SPELL: " .. spellName .. " id: " .. spellId .. " baseCD: " .. cooldownMS / 1000 .. " idx: " .. spellBookIndex)
         table.insert(self.cooldownList, newCooldown)
     end
 end
 
-function CDBar:_GetSpellBaseCooldown(spellId, spellName)
+function NicerCooldowns:_GetSpellBaseCooldown(spellId, spellName)
     if self.isClassic or self.isClassic60 then
         if spellId == nil then return 0 end
         return GetSpellBaseCooldown(spellId)
@@ -272,8 +272,8 @@ function CDBar:_GetSpellBaseCooldown(spellId, spellName)
     end
 end
 
-function CDBar:_GetSpellCooldown(spellId, spellBookIndex, type)
-    --DebugCDBar:Print("spellId: " .. spellId)
+function NicerCooldowns:_GetSpellCooldown(spellId, spellBookIndex, type)
+    --DebugNicerCooldowns:Print("spellId: " .. spellId)
     if spellId == nil then return end
     if type == "item" then return GetItemCooldown(spellId) end
     if self.isClassic or self.isClassic60 then
@@ -286,7 +286,7 @@ function CDBar:_GetSpellCooldown(spellId, spellBookIndex, type)
     end
 end
 
-function CDBar:_LoopPetSpellBook()
+function NicerCooldowns:_LoopPetSpellBook()
     local spellBookIndex = 1
     while true do
         local spellName, _ = self:_GetSpellBookItemName(spellBookIndex, BOOKTYPE_PET)
@@ -296,7 +296,7 @@ function CDBar:_LoopPetSpellBook()
     end
 end
 
-function CDBar:_AddPetSpellCooldown(spellName, spellBookIndex)
+function NicerCooldowns:_AddPetSpellCooldown(spellName, spellBookIndex)
     local name, _, icon, _, _, _, spellId = GetSpellInfo(spellName)
     local cooldownMS = self:_GetSpellBaseCooldown(spellId, name)
     local start, duration, enabled = self:_GetSpellCooldown(spellId, spellBookIndex, "")
@@ -323,11 +323,11 @@ function CDBar:_AddPetSpellCooldown(spellName, spellBookIndex)
         newCooldown.type = "pet"
         newCooldown.spellBookIndex = spellBookIndex
         table.insert(self.cooldownList, newCooldown)
-        --CDBar:Print("Added pet CD: " .. spellName .. " id: " .. spellId)
+        --NicerCooldowns:Print("Added pet CD: " .. spellName .. " id: " .. spellId)
     end
 end
 
-function CDBar:_AddItemSlot(slotId, name)
+function NicerCooldowns:_AddItemSlot(slotId, name)
     local itemLink = GetInventoryItemLink("player", slotId)
     local itemName, icon
     if itemLink then
@@ -356,13 +356,13 @@ function CDBar:_AddItemSlot(slotId, name)
     newCooldown.type = "item"
     newCooldown.slot = name
     newCooldown.slotId = slotId
-    --CDBar:Print("Added ITEM: " .. itemName .. " id: " .. itemID .. " baseCD: " .. 0)
+    --NicerCooldowns:Print("Added ITEM: " .. itemName .. " id: " .. itemID .. " baseCD: " .. 0)
     table.insert(self.cooldownList, newCooldown)
 end
 
-function CDBar:UpdateCooldownFrames()
+function NicerCooldowns:UpdateCooldownFrames()
     self:_UpdateCooldownData()
-    --DebugCDBar:Print("Upading CDs")
+    --DebugNicerCooldowns:Print("Upading CDs")
 
     if self.db.class.durationSort then
         self:_SortByCooldown()
@@ -371,7 +371,7 @@ function CDBar:UpdateCooldownFrames()
     end
     local readyCooldowns = {}
     if self.db.class.hideReadyCooldowns then
-        readyCooldowns = CDBar:tableFilter(self.cooldownList, function(cd)
+        readyCooldowns = NicerCooldowns:tableFilter(self.cooldownList, function(cd)
             return cd.isOnCooldown
         end)
     end
@@ -383,7 +383,7 @@ function CDBar:UpdateCooldownFrames()
         self:HideFrame(i)
         local frame = self:_CreateCooldownFrame(spellNum, cooldown)
         --addFrameHotkey(frame, cooldown)
-        CDBar:tableMerge(frame, cooldown)
+        NicerCooldowns:tableMerge(frame, cooldown)
         if cooldown.isOnCooldown then
             frame.hidden = false
             self:SetFrameCooldown(frame.cooldown, cooldown.start, cooldown.duration)
@@ -400,7 +400,7 @@ function CDBar:UpdateCooldownFrames()
     local cooldownFrameHeight = self:UpdateAuraPositions(cooldownCount)
 end
 
-function CDBar:_UpdateCooldownData()
+function NicerCooldowns:_UpdateCooldownData()
     local GCD
     if self.isClassic then
         _, GCD = GetSpellCooldown(61304)
@@ -439,17 +439,17 @@ function CDBar:_UpdateCooldownData()
     --self:_LoopActionBar()
 end
 
-function CDBar:_SortByCooldown()
+function NicerCooldowns:_SortByCooldown()
     table.sort(self.cooldownList, function(a, b)
-        local number = tonumber(CDBar:stringSplit(a.dbSpell)[1]) or -1
-        local number2 = tonumber(CDBar:stringSplit(b.dbSpell)[1]) or -1
+        local number = tonumber(NicerCooldowns:stringSplit(a.dbSpell)[1]) or -1
+        local number2 = tonumber(NicerCooldowns:stringSplit(b.dbSpell)[1]) or -1
         if a.isOnCooldown == b.isOnCooldown then
             if a.isOnCooldown then
                 return a.remainingCooldown < b.remainingCooldown
             else
                 if number == number2 then
-                    local name = CDBar:tableJoin(CDBar:stringSplit(a.dbSpell), 2)
-                    local name2 = CDBar:tableJoin(CDBar:stringSplit(b.dbSpell), 2)
+                    local name = NicerCooldowns:tableJoin(NicerCooldowns:stringSplit(a.dbSpell), 2)
+                    local name2 = NicerCooldowns:tableJoin(NicerCooldowns:stringSplit(b.dbSpell), 2)
                     return name > name2
                 end
                 return number < number2
@@ -459,20 +459,20 @@ function CDBar:_SortByCooldown()
     end)
 end
 
-function CDBar:_SortByIndex()
+function NicerCooldowns:_SortByIndex()
     table.sort(self.cooldownList, function(a, b)
-        local number = tonumber(CDBar:stringSplit(a.dbSpell)[1]) or -1
-        local number2 = tonumber(CDBar:stringSplit(b.dbSpell)[1]) or -1
+        local number = tonumber(NicerCooldowns:stringSplit(a.dbSpell)[1]) or -1
+        local number2 = tonumber(NicerCooldowns:stringSplit(b.dbSpell)[1]) or -1
         if number == number2 then
-            local name = CDBar:tableJoin(CDBar:stringSplit(a.dbSpell), 2)
-            local name2 = CDBar:tableJoin(CDBar:stringSplit(b.dbSpell), 2)
+            local name = NicerCooldowns:tableJoin(NicerCooldowns:stringSplit(a.dbSpell), 2)
+            local name2 = NicerCooldowns:tableJoin(NicerCooldowns:stringSplit(b.dbSpell), 2)
             return name > name2
         end
         return number < number2
     end)
 end
 
-function CDBar:_CreateCooldownTimer(cooldown)
+function NicerCooldowns:_CreateCooldownTimer(cooldown)
     if self.isClassic or self.isClassic60 then
         if cooldown.timer == nil then
             cooldown.timer = C_Timer.NewTimer(cooldown.remainingCooldown + 0.1, function()
@@ -483,16 +483,16 @@ function CDBar:_CreateCooldownTimer(cooldown)
         end
     elseif self.isTBC or self.isWotlk then
         if cooldown.timerId == nil then
-            cooldown.timerId = CDBar:ScheduleTimer(function()
+            cooldown.timerId = NicerCooldowns:ScheduleTimer(function()
                 self:UpdateCooldownFrames()
                 cooldown.timerId = nil
             end, cooldown.remainingCooldown + 0.1)
         else
-            local frameTimer = CDBar:numberRound(CDBar:TimeLeft(cooldown.timerId), 1)
-            local remainingTimer = CDBar:numberRound(cooldown.remainingCooldown, 1)
+            local frameTimer = NicerCooldowns:numberRound(NicerCooldowns:TimeLeft(cooldown.timerId), 1)
+            local remainingTimer = NicerCooldowns:numberRound(cooldown.remainingCooldown, 1)
             if frameTimer ~= remainingTimer then
-                CDBar:CancelTimer(cooldown.timerId)
-                cooldown.timerId = CDBar:ScheduleTimer(function()
+                NicerCooldowns:CancelTimer(cooldown.timerId)
+                cooldown.timerId = NicerCooldowns:ScheduleTimer(function()
                     self:UpdateCooldownFrames()
                     cooldown.timerId = nil
                 end, cooldown.remainingCooldown + 0.1)
@@ -500,4 +500,3 @@ function CDBar:_CreateCooldownTimer(cooldown)
         end
     end
 end
-

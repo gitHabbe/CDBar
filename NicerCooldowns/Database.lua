@@ -1,4 +1,4 @@
-function CDBar:DatabaseInitialize()
+function NicerCooldowns:DatabaseInitialize()
     self.defaults = {}
     self.defaults.class = {}
     for k, v in pairs(self.ClassDefaults) do
@@ -22,11 +22,11 @@ function CDBar:DatabaseInitialize()
     end
 end
 
-function CDBar:_CreateDB()
+function NicerCooldowns:_CreateDB()
     if self.isClassic or self.isClassic60 then
-        self.dbi = LibStub("AceDB-3.0"):New("CDBar_DB", self.defaults, true)
+        self.dbi = LibStub("AceDB-3.0"):New("NicerCooldowns_DB", self.defaults, true)
     elseif self.isTBC or self.isWotlk then
-        self.dbi = LibStub("AceDB-3.0"):New("CDBar_DB", self.defaults, "default")
+        self.dbi = LibStub("AceDB-3.0"):New("NicerCooldowns_DB", self.defaults, "default")
     end
 
     if self.isTBC or self.isWotlk or self.isClassic60 then
@@ -60,10 +60,10 @@ function CDBar:_CreateDB()
 
 end
 
-function CDBar:IsCooldownInDB(tableDB, targetSpellName)
+function NicerCooldowns:IsCooldownInDB(tableDB, targetSpellName)
     for _, value in pairs(tableDB) do
-        local dbSpellAsTable = CDBar:stringSplit(value)
-        local dbSpellName = table.concat(CDBar:tableSlice(dbSpellAsTable, 2, #dbSpellAsTable), " ")
+        local dbSpellAsTable = NicerCooldowns:stringSplit(value)
+        local dbSpellName = table.concat(NicerCooldowns:tableSlice(dbSpellAsTable, 2, #dbSpellAsTable), " ")
 
         if dbSpellName == targetSpellName then
             return value
@@ -73,10 +73,10 @@ function CDBar:IsCooldownInDB(tableDB, targetSpellName)
     return false
 end
 
-function CDBar:AddCooldownToDB(tableDB, targetSpellName)
+function NicerCooldowns:AddCooldownToDB(tableDB, targetSpellName)
     local tempTable = {}
     for _, dbSpell in ipairs(tableDB) do
-        local dbSpellNum = tonumber(CDBar:stringSplit(dbSpell)[1])
+        local dbSpellNum = tonumber(NicerCooldowns:stringSplit(dbSpell)[1])
         if type(dbSpellNum) == "number" and math.floor(dbSpellNum) == dbSpellNum then
             tempTable[tonumber(dbSpellNum)] = targetSpellName
         end

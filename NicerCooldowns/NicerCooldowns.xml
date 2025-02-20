@@ -1,18 +1,18 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
 
     <!-- AURAFRAME TEMPLATE -->
-    <Frame name="CDBar_CooldownFrame_Template" inherits="CDBar_AuraFrameTemplate" virtual="true">
+    <Frame name="NicerCooldowns_CooldownFrame_Template" inherits="NicerCooldowns_AuraFrameTemplate" virtual="true">
         <Size>
             <AbsDimension x="198" y="1" />
         </Size>
     </Frame>
 
     <!-- ICON-FRAME TEMPLATE -->
-    <Frame name="CDBar_AuraFrameTemplate" virtual="true">
+    <Frame name="NicerCooldowns_AuraFrameTemplate" virtual="true">
     </Frame>
 
     <!-- ICON TEMPLATE -->
-    <Frame name="CDBarCooldownFrame_Template" enableMouse="true" virtual="true">
+    <Frame name="NicerCooldownsCooldownFrame_Template" enableMouse="true" virtual="true">
         <Size>
             <AbsDimension x="20" y="20" />
         </Size>
@@ -89,26 +89,26 @@
             <OnUpdate>
             </OnUpdate>
             <OnEnter>
-                if not CDBar.db.class.showTooltip then
+                if not NicerCooldowns.db.class.showTooltip then
                     return
                 end
                 GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 15, 15);
                 if self.type == "spell" then
-                    if CDBar.isClassic or CDBar.isClassic60 then
+                    if NicerCooldowns.isClassic or NicerCooldowns.isClassic60 then
                         GameTooltip:SetSpellByID(self.spellId);
-                    elseif CDBar.isTBC or CDBar.isWotlk then
+                    elseif NicerCooldowns.isTBC or NicerCooldowns.isWotlk then
                         GameTooltip:SetSpell(self.spellBookIndex, BOOKTYPE_SPELL);
                     end
                 elseif self.type == "pet" then
-                    if CDBar.isClassic or CDBar.isClassic60 then
+                    if NicerCooldowns.isClassic or NicerCooldowns.isClassic60 then
                         GameTooltip:SetSpellByID(self.spellId);
-                    elseif CDBar.isTBC or CDBar.isWotlk then
+                    elseif NicerCooldowns.isTBC or NicerCooldowns.isWotlk then
                         GameTooltip:SetSpell(self.spellBookIndex, BOOKTYPE_PET);
                     end
                 elseif self.type == "item" then
-                    if CDBar.isClassic or CDBar.isClassic60 then
+                    if NicerCooldowns.isClassic or NicerCooldowns.isClassic60 then
                         GameTooltip:SetItemByID(self.spellId)
-                    elseif CDBar.isTBC or CDBar.isWotlk then
+                    elseif NicerCooldowns.isTBC or NicerCooldowns.isWotlk then
                         GameTooltip:SetInventoryItem("player", self.slotId)
                     end
                 end
@@ -129,5 +129,5 @@
         <Color r="1.0" g="1.0" b="1.0"/>
     </Font>
 
-    <Script File="CDBar.lua" />
+    <Script File="NicerCooldowns.lua" />
 </Ui>
