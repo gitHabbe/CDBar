@@ -2137,6 +2137,13 @@ LCT_SpellData_Wotlk[3716] = {
     cooldown = 5,
     pet = true,
 }
+-- Sacrifice
+LCT_SpellData_Wotlk[7812] = {
+    name = "Sacrifice",
+    class = "WARLOCK",
+    cooldown = 60,
+    pet = true,
+}
 LCT_SpellData_Wotlk[7809] = 3716
 LCT_SpellData_Wotlk[7810] = 3716
 LCT_SpellData_Wotlk[7811] = 3716

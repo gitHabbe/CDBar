@@ -1,4 +1,4 @@
-function colorize(text, color)
+local function colorize(text, color)
     return color .. text .. "|r"
 end
 

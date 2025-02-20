@@ -234,7 +234,7 @@ function CDBar:_GetSpellBaseCooldown(spellId, spellName)
     if self.isClassic or self.isClassic60 then
         if spellId == nil then return 0 end
         return GetSpellBaseCooldown(spellId)
-    elseif self.isTBC then
+    elseif self.isTBC or self.isWotlk then
         local spellData
         if spellName and self.spellCache[string.lower(spellName)] ~= nil then return 0 end
         --if self.spellCache[string.lower(spellName)] == true then return 0 end
@@ -418,7 +418,7 @@ function CDBar:_UpdateCooldownData()
                     isOnCooldown = false
                 end
             end
-        elseif self.isTBC or self.isClassic60 then
+        elseif self.isTBC or self.isWotlk or self.isClassic60 then
             if cooldown.type == "pet" then
                 if duration == 1.5 then
                     isOnCooldown = false

@@ -96,19 +96,19 @@
                 if self.type == "spell" then
                     if CDBar.isClassic or CDBar.isClassic60 then
                         GameTooltip:SetSpellByID(self.spellId);
-                    elseif CDBar.isTBC then
+                    elseif CDBar.isTBC or CDBar.isWotlk then
                         GameTooltip:SetSpell(self.spellBookIndex, BOOKTYPE_SPELL);
                     end
                 elseif self.type == "pet" then
                     if CDBar.isClassic or CDBar.isClassic60 then
                         GameTooltip:SetSpellByID(self.spellId);
-                    elseif CDBar.isTBC then
+                    elseif CDBar.isTBC or CDBar.isWotlk then
                         GameTooltip:SetSpell(self.spellBookIndex, BOOKTYPE_PET);
                     end
                 elseif self.type == "item" then
                     if CDBar.isClassic or CDBar.isClassic60 then
                         GameTooltip:SetItemByID(self.spellId)
-                    elseif CDBar.isTBC then
+                    elseif CDBar.isTBC or CDBar.isWotlk then
                         GameTooltip:SetInventoryItem("player", self.slotId)
                     end
                 end
