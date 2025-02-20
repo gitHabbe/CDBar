@@ -1,9 +1,9 @@
-# CDBar
+# NicerCooldowns
 
-This is an addon developed for the World of Warcraft Classic, 2.4.3, and 3.3.5 client.  
+This is an addon developed for the World of Warcraft Classic, 2.4.3, and 3.3.5 client.
 Change the content of `/Libs` directory to match your target client.
 
-CDBar scans your spellbook and adds all cooldowns together in a grid of icons. This lets you quickly know when cooldowns are ready again and what cooldowns are ready right now.
+NicerCooldowns scans your spellbook and adds all cooldowns together in a grid of icons. This lets you quickly know when cooldowns are ready again and what cooldowns are ready right now.
 This allows you to theoretically hide most of your actionbars assuming they are bound to a keybinding.
 
 #### Features:
@@ -14,7 +14,7 @@ This allows you to theoretically hide most of your actionbars assuming they are 
 5. Dark borders
 
 
-Type `/cdbar` or `/cdb` to open settings
+Type `/nicercooldowns` or `/nc` to open settings
 
-![Imgur](https://github.com/gitHabbe/CDBar/blob/assets/assets/CDBar_HideAll_Sorted.gif)  
+![Imgur](https://github.com/gitHabbe/NicerCooldowns/blob/assets/assets/CDBar_HideAll_Sorted.gif)
 Special thank you to [DnB_Junkee](https://github.com/XiconQoo "XiconQoo")
